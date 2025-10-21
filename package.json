@@ -1,0 +1,30 @@
+{
+  "name": "nestgen",
+  "version": "1.0.0",
+  "description": "CLI pour générer entités et repositories NestJS",
+  "main": "dist/index.js",
+  "bin": {
+    "nestgen": "dist/index.js"
+  },
+  "type": "commonjs",
+  "files": ["dist", "templates"],
+  "scripts": {
+    "build": "tsc",
+    "start": "ts-node src/index.ts"
+  },
+  "keywords": ["nestjs", "cli", "generator"],
+  "author": "Ton Nom",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^14.0.1",
+    "ejs": "^3.1.10",
+    "inquirer": "^12.10.0"
+  },
+  "devDependencies": {
+    "@types/ejs": "^3.1.5",
+    "@types/node": "^24.9.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
+

@@ -1,0 +1,10 @@
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+
+@Entity('<%= entityName %>')
+export class <%= entityName %> {
+@PrimaryGeneratedColumn()
+id: number;
+
+@Column()
+name: string;
+}

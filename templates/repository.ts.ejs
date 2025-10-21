@@ -1,0 +1,8 @@
+import { Injectable } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { <%= entityName %> } from '../entities/<%= entityLower %>.entity';
+
+@Injectable()
+export class <%= entityName %>Repository extends Repository<<%= entityName %>> {
+// Custom repository methods
+}
