@@ -1,0 +1,5 @@
+<% imports.forEach(function(imp){ %><%- imp %><% }) %>
+
+export const <%= exportVarName %> = [
+    <%= exports.join(",\n    ") %>
+];

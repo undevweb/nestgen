@@ -1,0 +1,23 @@
+import { Controller, Get, Param, Post, Body } from '@nestjs/common';
+import { <%= entityName %>Service } from '../services/<%= entityLower %>.service';
+import { <%= entityName %> } from '../entities/<%= entityLower %>.entity';
+
+@Controller('<%= entityLower %>')
+export class <%= entityName %>Controller {
+constructor(private readonly service: <%= entityName %>Service) {}
+
+@Get()
+getAll(): Promise<<%= entityName %>[]> {
+return this.service.findAll();
+}
+
+@Get(':id')
+getOne(@Param('id') id: string): Promise<<%= entityName %> | null> {
+return this.service.findOne(Number(id));
+}
+
+@Post()
+create(@Body() data: Partial<<%= entityName %>>): Promise<<%= entityName %>> {
+return this.service.create(data);
+}
+}
