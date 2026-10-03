@@ -1,0 +1,9 @@
+import { DataSource } from 'typeorm';
+<% imports.forEach(function(imp){ %><%- imp %><% }) %>
+export const PROVIDERS = [<% providers.forEach((p, index) => { %>
+    { name: '<%= p.name %>', entity: <%= p.nameEntity %> }<%= index < providers.length - 1 ? ',' : '' %><% }) %>
+].map((repo) => ({
+    provide: repo.name + '_REPOSITORY',
+    useFactory: (dataSource: DataSource) => dataSource.getRepository(repo.entity),
+    inject: ['DATA_SOURCE'],
+}));

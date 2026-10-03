@@ -1,0 +1,14 @@
+import { Injectable } from '@nestjs/common';
+import { <%= pascalCase %>Repository } from '../Database/Repository/<%= pascalCase %>Repository';
+import { <%= pascalCase %>Interface } from '../Interface/<%= pascalCase %>Interface';
+import { AppManager } from '../../app/Manager/AppManager';
+
+@Injectable()
+export class <%= pascalCase %>Manager extends AppManager<<%= pascalCase %>Interface> {
+  constructor(
+    protected repository: <%= pascalCase %>Repository
+  ) {
+    super();
+  }
+
+}

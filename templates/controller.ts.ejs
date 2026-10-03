@@ -1,23 +1,47 @@
-import { Controller, Get, Param, Post, Body } from '@nestjs/common';
-import { <%= entityName %>Service } from '../services/<%= entityLower %>.service';
-import { <%= entityName %> } from '../entities/<%= entityLower %>.entity';
+import { ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Param, Post, Put, Body, Delete, Request } from '@nestjs/common';
+import { WinstonLogger } from '../../../logger/winston-logger';
+import { AbstractAppController } from '../../../app/Api/Controller/AbstractAppController';
+import { AppError } from '../../../app/Api/Error/AppError';
+import { ParamIdDto } from '../../../app/Api/Dto/ParamIdDto';
+import { <%= pascalCase %>Manager } from '../../Manager/<%= pascalCase %>Manager';
+import { <%= pascalCase %>Interface } from '../../Interface/<%= pascalCase %>Interface';
+import { <%= pascalCase %>Postdto } from '../Dto/<%= pascalCase %>Postdto';
+import { <%= pascalCase %>Putdto } from '../Dto/<%= pascalCase %>Putdto';
 
-@Controller('<%= entityLower %>')
-export class <%= entityName %>Controller {
-constructor(private readonly service: <%= entityName %>Service) {}
+@ApiTags('<%= pascalCase %>')
+@Controller('<%= kebabCasePlural %>')
+export class <%= pascalCase %>Controller  extends AbstractAppController<<%= pascalCase %>Interface> {
 
-@Get()
-getAll(): Promise<<%= entityName %>[]> {
-return this.service.findAll();
-}
+    constructor(
+        protected manager: <%= pascalCase %>Manager,
+        protected readonly logger: WinstonLogger,
+    ) {
+        super();
+    }
 
-@Get(':id')
-getOne(@Param('id') id: string): Promise<<%= entityName %> | null> {
-return this.service.findOne(Number(id));
-}
+    @Get()
+    async getList() {
+        return super.getList();
+    }
 
-@Post()
-create(@Body() data: Partial<<%= entityName %>>): Promise<<%= entityName %>> {
-return this.service.create(data);
-}
+    @Get('/:id')
+    async getById(@Request() req, @Param('id') id: string): Promise<<%= pascalCase %>Interface> {
+        return super.getById(req, id);
+    }
+
+    @Post()
+    async post(@Request() req, @Body() itemPostDto: <%= pascalCase %>Postdto): Promise<<%= pascalCase %>Interface> {
+        return await super.post(req, itemPostDto);
+    }
+
+    @Put('/:id')
+    async put(@Request() req, @Param('id') id: string, @Body() item: <%= pascalCase %>Putdto): Promise<<%= pascalCase %>Interface> {
+        return super.put(req, id, item);
+    }
+
+    @Delete('/:id')
+    async remove(@Request() req, @Param('id') id: string): Promise<void> {
+       await super.remove(req, id);
+    }
 }

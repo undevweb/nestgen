@@ -1,10 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { <%= pascalCase %>Interface } from '../../Interface/<%= pascalCase %>Interface';
 
-@Entity('<%= entityName %>')
-export class <%= entityName %> {
-@PrimaryGeneratedColumn()
-id: number;
-
-@Column()
-name: string;
+@Entity('<%= snakeCase %>')
+export class <%= pascalCase %>Entity implements <%= pascalCase %>Interface{
+    @PrimaryGeneratedColumn('uuid')
+    id?: string;
 }

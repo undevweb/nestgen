@@ -1,0 +1,15 @@
+import { Module } from '@nestjs/common';
+import { LoggerModule } from '../logger/logger.module';
+import { DatabaseModule } from '../database/database.module';
+import { REPOSITORIES } from './Database/Repository';
+import { PROVIDERS } from './Database/Repository/providers';
+import { MANAGERS } from './Manager';
+import { CONTROLLERS } from './Api/Controller';
+import { SERVICES } from './Service';
+
+@Module({
+  imports: [DatabaseModule, LoggerModule],
+  controllers: [...CONTROLLERS],
+  providers: [...MANAGERS, ...PROVIDERS, ...REPOSITORIES, ...SERVICES],
+})
+export class <%= pascalCase %>Module {}

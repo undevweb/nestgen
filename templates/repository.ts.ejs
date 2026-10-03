@@ -1,8 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { <%= entityName %> } from '../entities/<%= entityLower %>.entity';
+import { AbstractAppRepository } from '../../../app/Database/Repository/AbstractAppRepository';
+import { <%= pascalCase %>Entity } from '../Entity/<%= pascalCase %>Entity';
 
 @Injectable()
-export class <%= entityName %>Repository extends Repository<<%= entityName %>> {
-// Méthodes personnalisées du repository
+export class <%= pascalCase %>Repository extends AbstractAppRepository<<%= pascalCase %>Entity> {
+
+    constructor( @Inject('<%= capitalCase %>_REPOSITORY') protected repository: Repository<<%= pascalCase %>Entity>) {
+        super();
+    }
 }
