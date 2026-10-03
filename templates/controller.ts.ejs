@@ -1,14 +1,18 @@
 import { ApiTags } from '@nestjs/swagger';
-import { Controller, Get, Param, Post, Put, Body, Delete, Request } from '@nestjs/common';
+import { Controller, Get, Param, Post, Put, Body, Delete, Request, UseGuards } from '@nestjs/common';
 import { WinstonLogger } from '../../../logger/winston-logger';
 import { AbstractAppController } from '../../../app/Api/Controller/AbstractAppController';
 import { AppError } from '../../../app/Api/Error/AppError';
 import { ParamIdDto } from '../../../app/Api/Dto/ParamIdDto';
+import { JwtAuthGuard } from '../../../user/Security/JwtAuthGuard';
 import { <%= pascalCase %>Manager } from '../../Manager/<%= pascalCase %>Manager';
 import { <%= pascalCase %>Interface } from '../../Interface/<%= pascalCase %>Interface';
 import { <%= pascalCase %>Postdto } from '../Dto/<%= pascalCase %>Postdto';
 import { <%= pascalCase %>Putdto } from '../Dto/<%= pascalCase %>Putdto';
 
+// Protege par defaut (jeton JWT requis). Pour restreindre a des roles : @UseGuards(JwtAuthGuard, RolesGuard)
+// + @Roles(RolesEnum.ADMIN) (voir user/Security). Retirer le guard pour une route volontairement publique.
+@UseGuards(JwtAuthGuard)
 @ApiTags('<%= pascalCase %>')
 @Controller('<%= kebabCasePlural %>')
 export class <%= pascalCase %>Controller  extends AbstractAppController<<%= pascalCase %>Interface> {
