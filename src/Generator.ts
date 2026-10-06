@@ -1,6 +1,7 @@
 import inquirer from "inquirer";
 import {GenerateModule} from "./generators/GenerateModule";
 import fs from "fs";
+import {spawnSync} from "child_process";
 import path from "path";
 import ejs from "ejs";
 import {renderTemplate} from "./functions/render-template";
@@ -97,6 +98,21 @@ export class Generator {
         this.generateIndexFile(path.join(this.projectPath, "src", this.currentModule ?? "", "Service"), 'SERVICES');
         this.generateIndexFile(paths.manager, 'MANAGERS');
         this.generateProvidersFile(paths.repository);
+        this.formatModule();
+    }
+
+    /**
+     * Formate le module genere avec le Prettier du projet cible (un projet de la flotte verifie le formatage en CI : format:check).
+     * Sans Prettier installe dans le projet, on previent sans echouer.
+     */
+    formatModule() {
+        const moduleDir = path.join("src", this.currentModule ?? "");
+        const result = spawnSync("pnpm", ["exec", "prettier", "--write", moduleDir], {cwd: this.projectPath, shell: true, encoding: "utf8"});
+        if (result.status === 0) {
+            console.log("✅ Formatage Prettier : " + moduleDir);
+        } else {
+            console.warn("⚠️ Prettier indisponible dans le projet : lancer `pnpm run format` avant de commiter.");
+        }
     }
 
     async generateForEntities(): Promise<boolean> {

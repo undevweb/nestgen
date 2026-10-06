@@ -1,8 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { <%= pascalCase %>Interface } from '../../Interface/<%= pascalCase %>Interface';
 
 @Entity('<%= snakeCase %>')
 export class <%= pascalCase %>Entity implements <%= pascalCase %>Interface{
     @PrimaryGeneratedColumn('uuid')
     id?: string;
+
+    // Chaque relation (ManyToOne) declare l'index de sa cle etrangere, PostgreSQL ne le fait pas :
+    //   @Index('IDX_<%= snakeCase %>_parentId') @Column({ type: 'uuid' }) parentId?: string;
+    // (+ migration CREATE INDEX IF NOT EXISTS ; verifie par ForeignKeyIndexes.int-spec)
 }

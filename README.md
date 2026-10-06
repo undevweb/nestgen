@@ -22,3 +22,13 @@ Les modèles supposent la couche commune `src/app/` du kit `nestjs-kit-starter-f
 (`AbstractAppController`, `AppManager`, `AbstractAppRepository`).
 
 `pnpm run copy:templates` copie les templates dans `dist/` (commande `robocopy`, Windows).
+
+## Ce que produit le contrôleur généré
+
+Il s'appuie sur la **garde globale** du kit (`AppModule` : toute route exige un jeton) : aucun `@UseGuards`.
+Lecture (`GET`) ouverte à tout compte connecté, écriture (`POST`/`PUT`/`DELETE`) réservée à `@Roles(RolesEnum.ADMIN)`.
+Ouvrir une écriture à tout compte n'est valable que pour une action de l'utilisateur sur ses propres données. Après
+génération, ajouter le contrôleur à `route-policy.spec.ts` du projet puis régénérer `route-policy.json`.
+
+Le module généré est **formaté avec le Prettier du projet cible** (`pnpm exec prettier --write src/<module>`), pour
+passer `format:check` en CI ; sans Prettier dans le projet, un avertissement demande de lancer `pnpm run format`.

@@ -1,51 +1,60 @@
 import { ApiTags } from '@nestjs/swagger';
-import { Controller, Get, Param, Post, Put, Body, Delete, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Post, Put, Body, Delete, Request } from '@nestjs/common';
 import { WinstonLogger } from '../../../logger/winston-logger';
 import { AbstractAppController } from '../../../app/Api/Controller/AbstractAppController';
-import { AppError } from '../../../app/Api/Error/AppError';
-import { ParamIdDto } from '../../../app/Api/Dto/ParamIdDto';
-import { JwtAuthGuard } from '../../../user/Security/JwtAuthGuard';
+import { Roles } from '../../../user/Security/RolesDecorator';
+import { RolesEnum } from '../../../user/Enum/RolesEnum';
 import { <%= pascalCase %>Manager } from '../../Manager/<%= pascalCase %>Manager';
 import { <%= pascalCase %>Interface } from '../../Interface/<%= pascalCase %>Interface';
 import { <%= pascalCase %>Postdto } from '../Dto/<%= pascalCase %>Postdto';
 import { <%= pascalCase %>Putdto } from '../Dto/<%= pascalCase %>Putdto';
 
-// Protege par defaut (jeton JWT requis). Pour restreindre a des roles : @UseGuards(JwtAuthGuard, RolesGuard)
-// + @Roles(RolesEnum.ADMIN) (voir user/Security). Retirer le guard pour une route volontairement publique.
-@UseGuards(JwtAuthGuard)
+// Securise par defaut : la garde globale (AppModule) exige un jeton valide sur toute route, sans decorateur.
+// - lecture : tout compte connecte (invite compris) ;
+// - ecriture : ADMIN. Ouvrir une ecriture a tout compte n'est valable que pour une action de l'utilisateur sur SES
+//   donnees (verifier la propriete de l'enregistrement) ; route-policy.spec la fera declarer.
+// - @Public() (user/Security/PublicDecorator) pour une route volontairement ouverte, a ajouter a PUBLIC_ROUTES.
+// - Route imbriquee (/parents/:parentId/<%= kebabCasePlural %>) : ne pas heriter getList(), il renvoie la table entiere ;
+//   utiliser manager.getListOfParent('parentId', id).
 @ApiTags('<%= pascalCase %>')
 @Controller('<%= kebabCasePlural %>')
-export class <%= pascalCase %>Controller  extends AbstractAppController<<%= pascalCase %>Interface> {
+export class <%= pascalCase %>Controller extends AbstractAppController<<%= pascalCase %>Interface> {
+  constructor(
+    protected manager: <%= pascalCase %>Manager,
+    protected readonly logger: WinstonLogger,
+  ) {
+    super();
+  }
 
-    constructor(
-        protected manager: <%= pascalCase %>Manager,
-        protected readonly logger: WinstonLogger,
-    ) {
-        super();
-    }
+  @Get()
+  async getList() {
+    return super.getList();
+  }
 
-    @Get()
-    async getList() {
-        return super.getList();
-    }
+  @Get('/:id')
+  async getById(@Request() req, @Param('id') id: string): Promise<<%= pascalCase %>Interface> {
+    return super.getById(req, id);
+  }
 
-    @Get('/:id')
-    async getById(@Request() req, @Param('id') id: string): Promise<<%= pascalCase %>Interface> {
-        return super.getById(req, id);
-    }
+  @Roles(RolesEnum.ADMIN)
+  @Post()
+  async post(@Request() req, @Body() itemPostDto: <%= pascalCase %>Postdto): Promise<<%= pascalCase %>Interface> {
+    return await super.post(req, itemPostDto);
+  }
 
-    @Post()
-    async post(@Request() req, @Body() itemPostDto: <%= pascalCase %>Postdto): Promise<<%= pascalCase %>Interface> {
-        return await super.post(req, itemPostDto);
-    }
+  @Roles(RolesEnum.ADMIN)
+  @Put('/:id')
+  async put(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() item: <%= pascalCase %>Putdto,
+  ): Promise<<%= pascalCase %>Interface> {
+    return super.put(req, id, item);
+  }
 
-    @Put('/:id')
-    async put(@Request() req, @Param('id') id: string, @Body() item: <%= pascalCase %>Putdto): Promise<<%= pascalCase %>Interface> {
-        return super.put(req, id, item);
-    }
-
-    @Delete('/:id')
-    async remove(@Request() req, @Param('id') id: string): Promise<void> {
-       await super.remove(req, id);
-    }
+  @Roles(RolesEnum.ADMIN)
+  @Delete('/:id')
+  async remove(@Request() req, @Param('id') id: string): Promise<void> {
+    await super.remove(req, id);
+  }
 }

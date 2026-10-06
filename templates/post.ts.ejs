@@ -1,5 +1,6 @@
 import { <%= pascalCase %>Interface } from '../../Interface/<%= pascalCase %>Interface';
 
 export class <%= pascalCase %>Postdto implements <%= pascalCase %>Interface {
-
+  // Champs requis : @IsDefined() + @IsNotEmpty() ; optionnels : @IsOptional().
+  // Le pipe ne saute pas les champs absents.
 }
